@@ -1,19 +1,17 @@
 module Main exposing (main)
 
 {- Generate Project Names
-      Tasks Remaining
-      [x] Set up Layout
-          [x] View to show name
-          [x] Button to generate
+   Tasks Remaining
+   [x] Set up Layout
+       [x] View to show name
+       [x] Button to generate
 
-      [x] Import adjective list
-      [x] Import noun list
-      [x] Generate simple 2-piece name
-      [x] Generate multiple-word name
-      [ ] Generate alliterative name
+   [x] Import adjective list
+   [x] Import noun list
+   [x] Generate simple 2-piece name
+   [x] Generate multiple-word name
+   [ ] Generate alliterative name
 
-   Nouns and Adjectives list taken from
-   https://github.com/aceakash/project-name-generator
 -}
 
 import Browser
@@ -31,7 +29,7 @@ import GeneratesProjectNames
 
 type alias Model =
     { generatedName : Maybe String
-    , wordLength : Int
+    , nameLength : Int
     }
 
 
@@ -39,12 +37,17 @@ type alias Model =
 -- INIT
 
 
+defaultWordLength : Int
+defaultWordLength =
+    2
+
+
 init : {} -> ( Model, Cmd Message )
 init _ =
     ( { generatedName = Nothing
-      , wordLength = 2
+      , nameLength = defaultWordLength
       }
-    , Cmd.none
+    , GeneratesProjectNames.randomName defaultWordLength NameGenerated
     )
 
 
@@ -70,7 +73,7 @@ view model =
 
 generatedNameView : Model -> Element Message
 generatedNameView model =
-    el [ centerX, centerY, Font.size 48 ] (text <| Maybe.withDefault "NO NAME GENERATED" model.generatedName)
+    el [ centerX, centerY, Font.size 48 ] (text <| Maybe.withDefault "Choose a name length and click Generate" model.generatedName)
 
 
 titleView : Element Message
@@ -96,18 +99,18 @@ menuView model =
             else
                 newLength
                     |> String.toInt
-                    |> Maybe.withDefault model.wordLength
+                    |> Maybe.withDefault model.nameLength
                     |> UserChangedLength
 
-        displayWordLengthInput wordLength =
-            if wordLength == 0 then
+        displayWordLengthInput nameLength =
+            if nameLength == 0 then
                 ""
 
             else
-                String.fromInt wordLength
+                String.fromInt nameLength
 
         generateNameButton =
-            if model.wordLength > 0 then
+            if model.nameLength > 0 then
                 buttonView UserClickedGenerateNameButton "Generate"
 
             else
@@ -122,7 +125,7 @@ menuView model =
         ]
         [ Input.text []
             { onChange = parseWordLengthInput
-            , text = displayWordLengthInput model.wordLength
+            , text = displayWordLengthInput model.nameLength
             , placeholder = Nothing
             , label = Input.labelAbove [] (text "Word Length")
             }
@@ -172,7 +175,7 @@ update message model =
             ( { model
                 | generatedName = Nothing
               }
-            , GeneratesProjectNames.randomName model.wordLength NameGenerated
+            , GeneratesProjectNames.randomName model.nameLength NameGenerated
             )
 
         NameGenerated name ->
@@ -184,7 +187,7 @@ update message model =
 
         UserChangedLength newLength ->
             ( { model
-                | wordLength = newLength
+                | nameLength = newLength
               }
             , Cmd.none
             )
