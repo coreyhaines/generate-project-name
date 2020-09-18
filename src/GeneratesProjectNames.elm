@@ -1,9 +1,24 @@
 module GeneratesProjectNames exposing (randomName)
 
+{-| Generates Random Project Names
+
+Nouns and Adjectives list taken from
+<https://github.com/aceakash/project-name-generator>
+
+-}
+
 import Random
 import Random.List
 
 
+{-| Produces a name of the form, adjective-adject-noun, by randomly choosing `length - 1` adjectives from a list and concatenating it with a random noun.
+
+This function returns a `Cmd msg`. You must provide this in the form `(String -> msg)`, where the `String` is the generated name.
+
+randomName 2 GeneratedName == "boring-authority"
+randomName 3 GeneratedName == "funny-dirty-cone"
+
+-}
 randomName : Int -> (String -> msg) -> Cmd msg
 randomName length msg =
     Random.map2
