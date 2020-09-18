@@ -1,17 +1,20 @@
 module Main exposing (main)
 
 {- Generate Project Names
-   Tasks Remaining
-   [x] Set up Layout
-       [ ] View to show name
-       [x] Button to generate
+      Tasks Remaining
+      [x] Set up Layout
+          [ ] View to show name
+          [x] Button to generate
 
-   [ ] Import adjective list
-   [ ] Import noun list
-   [ ] Get random seed
-   [ ] Generate simple 2-piece name
-   [ ] Generate multiple-word name
-   [ ] Generate alliterative name
+      [x] Import adjective list
+      [x] Import noun list
+      [ ] Get random seed
+      [ ] Generate simple 2-piece name
+      [ ] Generate multiple-word name
+      [ ] Generate alliterative name
+
+   Nouns and Adjectives list taken from
+   https://github.com/aceakash/project-name-generator
 -}
 
 import Browser
@@ -20,6 +23,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
+import GeneratesProjectNames
 
 
 
@@ -55,10 +59,20 @@ view model =
                 [ titleView
                 , row [ height fill, width fill ]
                     [ menuView model
+                    , generatedNameView model
                     ]
                 ]
         ]
     }
+
+
+generatedNameView : Model -> Element Message
+generatedNameView model =
+    let
+        name =
+            Maybe.withDefault "NO NAME GENERATED" model.generatedName
+    in
+    el [] (text name)
 
 
 titleView : Element Message
@@ -123,7 +137,13 @@ type Message
 
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
-    ( model, Cmd.none )
+    case message of
+        GenerateName ->
+            ( { model
+                | generatedName = Just GeneratesProjectNames.basicName
+              }
+            , Cmd.none
+            )
 
 
 
