@@ -4,11 +4,6 @@ import Random
 import Random.List
 
 
-
---multiWordRandomName : Int -> (String -> msg) -> Cmd msg
---multiWordRandomName size msg =
-
-
 randomName : Int -> (String -> msg) -> Cmd msg
 randomName length msg =
     Random.map2
