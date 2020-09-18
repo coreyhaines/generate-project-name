@@ -84,7 +84,7 @@ titleView =
         , Border.width 1
         ]
         [ el [ centerX ] <| text "Generate Project Name"
-        , el [ alignRight ] <| link [] { url = "https://github.com/coreyhaines/", label = text "github" }
+        , el [ alignRight ] <| link [] { url = "https://github.com/coreyhaines/generate-project-name", label = text "github" }
         ]
 
 

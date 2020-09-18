@@ -9,6 +9,10 @@
     "dev": "parcel --out-dir dev-output src/index.html",
     "build": "rm docs/*.js docs/*.js.map || parcel build --out-dir docs src/index.html"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coreyhaines/generate-project-name"
+  },
   "dependencies": {
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4"
