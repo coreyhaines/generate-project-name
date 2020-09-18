@@ -7,29 +7,19 @@ import Random.List
 randomName : Int -> (String -> msg) -> Cmd msg
 randomName length msg =
     Random.map2
-        (\generatedAdjectives ( noun, restNouns ) ->
-            generatedAdjectives
-                |> List.map Tuple.first
-                |> List.filterMap identity
-                |> List.intersperse "-"
-                |> List.foldl (++) ""
-                |> (\adjectiveList -> adjectiveList ++ "-" ++ Maybe.withDefault "errornoun" noun)
-        )
+        combineAdjectivesAndNounIntoName
         (Random.list (length - 1) (Random.List.choose adjectives))
         (Random.List.choose nouns)
         |> Random.generate msg
 
 
-
---Random.map2
---(\( adjective, _ ) ( noun, _ ) ->
---Maybe.withDefault "erroradjective" adjective
---++ "-"
---++ Maybe.withDefault "errornoun" noun
---)
---(Random.List.choose adjectives)
---(Random.List.choose nouns)
---|> Random.generate msg
+combineAdjectivesAndNounIntoName : List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
+combineAdjectivesAndNounIntoName generatedAdjectives generatedNoun =
+    (generatedNoun :: generatedAdjectives)
+        |> List.map Tuple.first
+        |> List.filterMap identity
+        |> List.intersperse "-"
+        |> List.foldl (++) ""
 
 
 adjectives : List String
