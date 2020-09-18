@@ -1,4 +1,20 @@
-module GeneratesProjectNames exposing (basicName)
+module GeneratesProjectNames exposing (basicName, randomName)
+
+import Random
+import Random.List
+
+
+randomName : (String -> msg) -> Cmd msg
+randomName msg =
+    Random.map2
+        (\( adjective, _ ) ( noun, _ ) ->
+            Maybe.withDefault "erroradjective" adjective
+                ++ "-"
+                ++ Maybe.withDefault "errornoun" noun
+        )
+        (Random.List.choose adjectives)
+        (Random.List.choose nouns)
+        |> Random.generate msg
 
 
 basicName : String

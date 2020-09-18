@@ -98,7 +98,7 @@ menuView _ =
         , spacing 10
         ]
         [ text "Things We Can Do"
-        , buttonView GenerateName "Generate"
+        , buttonView UserClickedGenerateNameButton "Generate"
         ]
 
 
@@ -128,7 +128,8 @@ buttonView onPress label =
 
 
 type Message
-    = GenerateName
+    = UserClickedGenerateNameButton
+    | NameGenerated String
 
 
 
@@ -138,9 +139,16 @@ type Message
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
-        GenerateName ->
+        UserClickedGenerateNameButton ->
             ( { model
-                | generatedName = Just GeneratesProjectNames.basicName
+                | generatedName = Nothing
+              }
+            , GeneratesProjectNames.randomName NameGenerated
+            )
+
+        NameGenerated name ->
+            ( { model
+                | generatedName = Just name
               }
             , Cmd.none
             )
