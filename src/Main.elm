@@ -3,13 +3,13 @@ module Main exposing (main)
 {- Generate Project Names
       Tasks Remaining
       [x] Set up Layout
-          [ ] View to show name
+          [x] View to show name
           [x] Button to generate
 
       [x] Import adjective list
       [x] Import noun list
       [x] Generate simple 2-piece name
-      [ ] Generate multiple-word name
+      [x] Generate multiple-word name
       [ ] Generate alliterative name
 
    Nouns and Adjectives list taken from
@@ -31,6 +31,7 @@ import GeneratesProjectNames
 
 type alias Model =
     { generatedName : Maybe String
+    , wordLength : Int
     }
 
 
@@ -40,7 +41,9 @@ type alias Model =
 
 init : {} -> ( Model, Cmd Message )
 init _ =
-    ( { generatedName = Nothing }
+    ( { generatedName = Nothing
+      , wordLength = 2
+      }
     , Cmd.none
     )
 
@@ -84,7 +87,32 @@ titleView =
 
 
 menuView : Model -> Element Message
-menuView _ =
+menuView model =
+    let
+        parseWordLengthInput newLength =
+            if String.length newLength == 0 then
+                UserChangedLength 0
+
+            else
+                newLength
+                    |> String.toInt
+                    |> Maybe.withDefault model.wordLength
+                    |> UserChangedLength
+
+        displayWordLengthInput wordLength =
+            if wordLength == 0 then
+                ""
+
+            else
+                String.fromInt wordLength
+
+        generateNameButton =
+            if model.wordLength > 0 then
+                buttonView UserClickedGenerateNameButton "Generate"
+
+            else
+                Element.none
+    in
     column
         [ height fill
         , Border.color (rgb 0 0 0)
@@ -92,8 +120,13 @@ menuView _ =
         , padding 20
         , spacing 10
         ]
-        [ text "Things We Can Do"
-        , buttonView UserClickedGenerateNameButton "Generate"
+        [ Input.text []
+            { onChange = parseWordLengthInput
+            , text = displayWordLengthInput model.wordLength
+            , placeholder = Nothing
+            , label = Input.labelAbove [] (text "Word Length")
+            }
+        , generateNameButton
         ]
 
 
@@ -125,6 +158,7 @@ buttonView onPress label =
 type Message
     = UserClickedGenerateNameButton
     | NameGenerated String
+    | UserChangedLength Int
 
 
 
@@ -138,12 +172,19 @@ update message model =
             ( { model
                 | generatedName = Nothing
               }
-            , GeneratesProjectNames.randomName 2 NameGenerated
+            , GeneratesProjectNames.randomName model.wordLength NameGenerated
             )
 
         NameGenerated name ->
             ( { model
                 | generatedName = Just name
+              }
+            , Cmd.none
+            )
+
+        UserChangedLength newLength ->
+            ( { model
+                | wordLength = newLength
               }
             , Cmd.none
             )
