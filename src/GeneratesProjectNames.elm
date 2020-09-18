@@ -1,4 +1,4 @@
-module GeneratesProjectNames exposing (basicName, randomName)
+module GeneratesProjectNames exposing (randomName)
 
 import Random
 import Random.List
@@ -15,14 +15,6 @@ randomName msg =
         (Random.List.choose adjectives)
         (Random.List.choose nouns)
         |> Random.generate msg
-
-
-basicName : String
-basicName =
-    Maybe.map2 (\adjective noun -> adjective ++ "-" ++ noun)
-        (List.head adjectives)
-        (List.head nouns)
-        |> Maybe.withDefault "error-generating-name"
 
 
 adjectives : List String
