@@ -31,8 +31,7 @@ randomName length msg =
 combineAdjectivesAndNounIntoName : List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
 combineAdjectivesAndNounIntoName generatedAdjectives generatedNoun =
     (generatedNoun :: generatedAdjectives)
-        |> List.map Tuple.first
-        |> List.filterMap identity
+        |> List.filterMap Tuple.first
         |> List.intersperse "-"
         |> List.foldl (++) ""
 
