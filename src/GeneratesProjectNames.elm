@@ -4,17 +4,37 @@ import Random
 import Random.List
 
 
-randomName : (String -> msg) -> Cmd msg
-randomName msg =
+
+--multiWordRandomName : Int -> (String -> msg) -> Cmd msg
+--multiWordRandomName size msg =
+
+
+randomName : Int -> (String -> msg) -> Cmd msg
+randomName length msg =
     Random.map2
-        (\( adjective, _ ) ( noun, _ ) ->
-            Maybe.withDefault "erroradjective" adjective
-                ++ "-"
-                ++ Maybe.withDefault "errornoun" noun
+        (\generatedAdjectives ( noun, restNouns ) ->
+            generatedAdjectives
+                |> List.map Tuple.first
+                |> List.filterMap identity
+                |> List.intersperse "-"
+                |> List.foldl (++) ""
+                |> (\adjectiveList -> adjectiveList ++ "-" ++ Maybe.withDefault "errornoun" noun)
         )
-        (Random.List.choose adjectives)
+        (Random.list (length - 1) (Random.List.choose adjectives))
         (Random.List.choose nouns)
         |> Random.generate msg
+
+
+
+--Random.map2
+--(\( adjective, _ ) ( noun, _ ) ->
+--Maybe.withDefault "erroradjective" adjective
+--++ "-"
+--++ Maybe.withDefault "errornoun" noun
+--)
+--(Random.List.choose adjectives)
+--(Random.List.choose nouns)
+--|> Random.generate msg
 
 
 adjectives : List String

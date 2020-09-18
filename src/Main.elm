@@ -138,7 +138,7 @@ update message model =
             ( { model
                 | generatedName = Nothing
               }
-            , GeneratesProjectNames.randomName NameGenerated
+            , GeneratesProjectNames.randomName 4 NameGenerated
             )
 
         NameGenerated name ->
