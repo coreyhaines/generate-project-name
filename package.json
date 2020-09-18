@@ -1,0 +1,20 @@
+{
+  "name": "name-generator",
+  "version": "1.0.0",
+  "description": "generates new project names",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Corey Haines",
+  "scripts": {
+    "dev": "parcel --out-dir dev-output src/index.html",
+    "build": "rm docs/*.js docs/*.js.map && parcel build --out-dir docs src/index.html"
+  },
+  "dependencies": {
+    "parcel": "^1.12.4",
+    "parcel-bundler": "^1.12.4"
+  },
+  "devDependencies": {
+    "elm-hot": "^1.1.5",
+    "node-elm-compiler": "^5.0.5"
+  }
+}
