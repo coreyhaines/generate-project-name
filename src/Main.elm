@@ -2,9 +2,9 @@ module Main exposing (main)
 
 {- Generate Project Names
    Tasks Remaining
-   [ ] Set up Layout
+   [x] Set up Layout
        [ ] View to show name
-       [ ] Button to generate
+       [x] Button to generate
 
    [ ] Import adjective list
    [ ] Import noun list
@@ -20,7 +20,6 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
-import Html exposing (Html)
 
 
 
