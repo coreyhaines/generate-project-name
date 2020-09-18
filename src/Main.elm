@@ -8,8 +8,7 @@ module Main exposing (main)
 
       [x] Import adjective list
       [x] Import noun list
-      [ ] Get random seed
-      [ ] Generate simple 2-piece name
+      [x] Generate simple 2-piece name
       [ ] Generate multiple-word name
       [ ] Generate alliterative name
 
@@ -68,11 +67,7 @@ view model =
 
 generatedNameView : Model -> Element Message
 generatedNameView model =
-    let
-        name =
-            Maybe.withDefault "NO NAME GENERATED" model.generatedName
-    in
-    el [] (text name)
+    el [ centerX, centerY, Font.size 48 ] (text <| Maybe.withDefault "NO NAME GENERATED" model.generatedName)
 
 
 titleView : Element Message
