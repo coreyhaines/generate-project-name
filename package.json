@@ -14,6 +14,7 @@
     "url": "git+https://github.com/coreyhaines/generate-project-name"
   },
   "dependencies": {
+    "node-forge": "^0.10.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4"
   },
