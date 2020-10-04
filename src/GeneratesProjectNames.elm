@@ -1,4 +1,4 @@
-module GeneratesProjectNames exposing (DelimiterType(..), randomName, randomNameWithDelimiter)
+module GeneratesProjectNames exposing (DelimiterType(..), defaultDelimiterType, randomName, randomNameWithDelimiter)
 
 {-| Generates Random Project Names
 
@@ -60,7 +60,7 @@ combineAdjectivesAndNounIntoName delimiterType generatedAdjectives generatedNoun
     in
     wordList
         |> applyDelimiterType delimiterType
-        |> List.foldr (++) ""
+        |> String.concat
 
 
 applyDelimiterType : DelimiterType -> List String -> List String

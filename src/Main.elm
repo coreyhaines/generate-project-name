@@ -55,9 +55,9 @@ init : {} -> ( Model, Cmd Message )
 init _ =
     ( { generatedName = Nothing
       , nameLength = defaultWordLength
-      , desiredDelimiterType = GeneratesProjectNames.PascalCase
+      , desiredDelimiterType = GeneratesProjectNames.defaultDelimiterType
       }
-    , GeneratesProjectNames.randomName defaultWordLength NameGenerated
+    , GeneratesProjectNames.randomNameWithDelimiter GeneratesProjectNames.defaultDelimiterType defaultWordLength NameGenerated
     )
 
 
