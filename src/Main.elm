@@ -139,8 +139,8 @@ menuView model =
             , placeholder = Nothing
             , label = Input.labelAbove [] (text "Word Length")
             }
-        , generateNameButton
         , delimiterChoiceView model
+        , generateNameButton
         ]
 
 
@@ -175,7 +175,7 @@ delimiterChoiceView model =
         , options =
             [ Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
             , Input.option GeneratesProjectNames.CamelCase (text "camelCase")
-            , Input.option GeneratesProjectNames.StringDelimiter (text "String")
+            , Input.option (GeneratesProjectNames.StringDelimiter "-") (text "String")
             ]
         }
 

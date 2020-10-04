@@ -15,12 +15,17 @@ import String.Extra
 type DelimiterType
     = PascalCase
     | CamelCase
-    | StringDelimiter
+    | StringDelimiter String
 
 
 defaultDelimiterType : DelimiterType
 defaultDelimiterType =
-    PascalCase
+    StringDelimiter defaultStringDelimiter
+
+
+defaultStringDelimiter : String
+defaultStringDelimiter =
+    "-"
 
 
 {-| Produces a name of the form, adjective-adject-noun, by randomly choosing `length - 1` adjectives from a list and concatenating it with a random noun.
@@ -72,8 +77,8 @@ applyDelimiterType delimiterType wordList =
                 h :: t ->
                     h :: List.map String.Extra.toSentenceCase t
 
-        StringDelimiter ->
-            List.intersperse "-" wordList
+        StringDelimiter delimiter ->
+            List.intersperse delimiter wordList
 
 
 adjectives : List String
