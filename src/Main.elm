@@ -202,7 +202,7 @@ update message model =
             ( { model
                 | generatedName = Nothing
               }
-            , GeneratesProjectNames.randomName model.nameLength NameGenerated
+            , GeneratesProjectNames.randomNameWithDelimiter model.desiredDelimiterType model.nameLength NameGenerated
             )
 
         NameGenerated name ->

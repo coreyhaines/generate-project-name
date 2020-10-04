@@ -1,4 +1,4 @@
-module GeneratesProjectNames exposing (DelimiterType(..), randomName)
+module GeneratesProjectNames exposing (DelimiterType(..), randomName, randomNameWithDelimiter)
 
 {-| Generates Random Project Names
 
@@ -9,12 +9,18 @@ Nouns and Adjectives list taken from
 
 import Random
 import Random.List
+import String.Extra
 
 
 type DelimiterType
     = PascalCase
     | CamelCase
     | StringDelimiter
+
+
+defaultDelimiterType : DelimiterType
+defaultDelimiterType =
+    PascalCase
 
 
 {-| Produces a name of the form, adjective-adject-noun, by randomly choosing `length - 1` adjectives from a list and concatenating it with a random noun.
@@ -26,20 +32,48 @@ randomName 3 GeneratedName == "funny-dirty-cone"
 
 -}
 randomName : Int -> (String -> msg) -> Cmd msg
-randomName length msg =
+randomName =
+    randomNameWithDelimiter defaultDelimiterType
+
+
+randomNameWithDelimiter : DelimiterType -> Int -> (String -> msg) -> Cmd msg
+randomNameWithDelimiter delimiterType length msg =
     Random.map2
-        combineAdjectivesAndNounIntoName
+        (combineAdjectivesAndNounIntoName delimiterType)
         (Random.list (length - 1) (Random.List.choose adjectives))
         (Random.List.choose nouns)
         |> Random.generate msg
 
 
-combineAdjectivesAndNounIntoName : List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
-combineAdjectivesAndNounIntoName generatedAdjectives generatedNoun =
-    (generatedNoun :: generatedAdjectives)
-        |> List.filterMap Tuple.first
-        |> List.intersperse "-"
-        |> List.foldl (++) ""
+combineAdjectivesAndNounIntoName : DelimiterType -> List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
+combineAdjectivesAndNounIntoName delimiterType generatedAdjectives generatedNoun =
+    let
+        wordList =
+            (generatedNoun :: generatedAdjectives)
+                |> List.filterMap Tuple.first
+                |> List.reverse
+    in
+    wordList
+        |> applyDelimiterType delimiterType
+        |> List.foldr (++) ""
+
+
+applyDelimiterType : DelimiterType -> List String -> List String
+applyDelimiterType delimiterType wordList =
+    case delimiterType of
+        PascalCase ->
+            List.map String.Extra.toSentenceCase wordList
+
+        CamelCase ->
+            case wordList of
+                [] ->
+                    wordList
+
+                h :: t ->
+                    h :: List.map String.Extra.toSentenceCase t
+
+        StringDelimiter ->
+            List.intersperse "-" wordList
 
 
 adjectives : List String
