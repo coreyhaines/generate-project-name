@@ -168,14 +168,14 @@ buttonView onPress label =
 delimiterChoiceView : Model -> Element Message
 delimiterChoiceView model =
     Input.radio
-        []
+        [ padding 5, spacing 10 ]
         { onChange = DelimiterTypeChosen
         , selected = Just model.desiredDelimiterType
         , label = Input.labelAbove [] (text "Delimiter")
         , options =
             [ Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
             , Input.option GeneratesProjectNames.CamelCase (text "camelCase")
-            , Input.option (GeneratesProjectNames.StringDelimiter "-") (text "String")
+            , Input.option (GeneratesProjectNames.StringDelimiter "-") (text "kebab-case")
             ]
         }
 
