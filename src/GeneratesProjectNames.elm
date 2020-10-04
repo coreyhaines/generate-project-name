@@ -1,4 +1,4 @@
-module GeneratesProjectNames exposing (randomName)
+module GeneratesProjectNames exposing (DelimiterType(..), randomName)
 
 {-| Generates Random Project Names
 
@@ -9,6 +9,12 @@ Nouns and Adjectives list taken from
 
 import Random
 import Random.List
+
+
+type DelimiterType
+    = PascalCase
+    | CamelCase
+    | StringDelimiter
 
 
 {-| Produces a name of the form, adjective-adject-noun, by randomly choosing `length - 1` adjectives from a list and concatenating it with a random noun.

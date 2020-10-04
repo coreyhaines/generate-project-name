@@ -38,14 +38,8 @@ import GeneratesProjectNames
 type alias Model =
     { generatedName : Maybe String
     , nameLength : Int
-    , desiredDelimiterType : DelimiterType
+    , desiredDelimiterType : GeneratesProjectNames.DelimiterType
     }
-
-
-type DelimiterType
-    = PascalCase
-    | CamelCase
-    | StringDelimiter
 
 
 
@@ -61,7 +55,7 @@ init : {} -> ( Model, Cmd Message )
 init _ =
     ( { generatedName = Nothing
       , nameLength = defaultWordLength
-      , desiredDelimiterType = PascalCase
+      , desiredDelimiterType = GeneratesProjectNames.PascalCase
       }
     , GeneratesProjectNames.randomName defaultWordLength NameGenerated
     )
@@ -179,9 +173,9 @@ delimiterChoiceView model =
         , selected = Just model.desiredDelimiterType
         , label = Input.labelAbove [] (text "Delimiter")
         , options =
-            [ Input.option PascalCase (text "PascalCase")
-            , Input.option CamelCase (text "camelCase")
-            , Input.option StringDelimiter (text "String")
+            [ Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
+            , Input.option GeneratesProjectNames.CamelCase (text "camelCase")
+            , Input.option GeneratesProjectNames.StringDelimiter (text "String")
             ]
         }
 
@@ -194,7 +188,7 @@ type Message
     = UserClickedGenerateNameButton
     | NameGenerated String
     | UserChangedLength Int
-    | DelimiterTypeChosen DelimiterType
+    | DelimiterTypeChosen GeneratesProjectNames.DelimiterType
 
 
 
