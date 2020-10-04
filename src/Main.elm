@@ -12,6 +12,14 @@ module Main exposing (main)
    [x] Generate multiple-word name
    [ ] Generate alliterative name
 
+   [ ] Choose style
+       [ ] PascalCase
+       [ ] Text delimiter (default -)
+       [ ] camelCase
+   [ ] Generate with different style
+       [ ] PascalCase
+       [ ] Text delimiter (default -)
+       [ ] camelCase
 -}
 
 import Browser
@@ -30,7 +38,14 @@ import GeneratesProjectNames
 type alias Model =
     { generatedName : Maybe String
     , nameLength : Int
+    , desiredDelimiterType : DelimiterType
     }
+
+
+type DelimiterType
+    = PascalCase
+    | CamelCase
+    | StringDelimiter
 
 
 
@@ -46,6 +61,7 @@ init : {} -> ( Model, Cmd Message )
 init _ =
     ( { generatedName = Nothing
       , nameLength = defaultWordLength
+      , desiredDelimiterType = PascalCase
       }
     , GeneratesProjectNames.randomName defaultWordLength NameGenerated
     )
@@ -130,6 +146,7 @@ menuView model =
             , label = Input.labelAbove [] (text "Word Length")
             }
         , generateNameButton
+        , delimiterChoiceView model
         ]
 
 
@@ -154,6 +171,21 @@ buttonView onPress label =
         }
 
 
+delimiterChoiceView : Model -> Element Message
+delimiterChoiceView model =
+    Input.radio
+        []
+        { onChange = DelimiterTypeChosen
+        , selected = Just model.desiredDelimiterType
+        , label = Input.labelAbove [] (text "Delimiter")
+        , options =
+            [ Input.option PascalCase (text "PascalCase")
+            , Input.option CamelCase (text "camelCase")
+            , Input.option StringDelimiter (text "String")
+            ]
+        }
+
+
 
 -- MESSAGE
 
@@ -162,6 +194,7 @@ type Message
     = UserClickedGenerateNameButton
     | NameGenerated String
     | UserChangedLength Int
+    | DelimiterTypeChosen DelimiterType
 
 
 
@@ -188,6 +221,13 @@ update message model =
         UserChangedLength newLength ->
             ( { model
                 | nameLength = newLength
+              }
+            , Cmd.none
+            )
+
+        DelimiterTypeChosen newDelimiterType ->
+            ( { model
+                | desiredDelimiterType = newDelimiterType
               }
             , Cmd.none
             )
