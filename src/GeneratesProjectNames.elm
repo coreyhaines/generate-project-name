@@ -1,8 +1,8 @@
 module GeneratesProjectNames exposing
-    ( DelimiterType(..)
+    ( CasingType(..)
     , GeneratedName
     , applyCasing
-    , defaultDelimiterType
+    , defaultCasingType
     , randomNameData
     )
 
@@ -19,17 +19,17 @@ import String.Extra
 
 
 type GeneratedName
-    = GeneratedName { adjectiveList : List String, noun : String }
+    = GeneratedName { adjectives : List String, noun : String }
 
 
-type DelimiterType
+type CasingType
     = PascalCase
     | CamelCase
     | StringDelimiter String
 
 
-defaultDelimiterType : DelimiterType
-defaultDelimiterType =
+defaultCasingType : CasingType
+defaultCasingType =
     StringDelimiter defaultStringDelimiter
 
 
@@ -42,33 +42,29 @@ randomNameData : Int -> (GeneratedName -> msg) -> Cmd msg
 randomNameData length msg =
     Random.map2
         createNameData
-        (Random.list (length - 1) (Random.List.choose adjectives))
+        (Random.list (length - 1) (Random.List.choose adjectiveList))
         (Random.List.choose nouns)
         |> Random.generate msg
 
 
 createNameData : List ( Maybe String, List String ) -> ( Maybe String, List String ) -> GeneratedName
 createNameData generatedAdjectives generatedNoun =
-    let
-        adjectivesForName =
-            List.filterMap Tuple.first generatedAdjectives
-
-        noun =
-            Tuple.first generatedNoun |> Maybe.withDefault "NoNounFound"
-    in
-    GeneratedName { adjectiveList = adjectivesForName, noun = noun }
+    GeneratedName
+        { adjectives = List.filterMap Tuple.first generatedAdjectives
+        , noun = Tuple.first generatedNoun |> Maybe.withDefault "NoNounFound"
+        }
 
 
-applyCasing : DelimiterType -> GeneratedName -> String
-applyCasing casing (GeneratedName { adjectiveList, noun }) =
-    (noun :: adjectiveList)
+applyCasing : CasingType -> GeneratedName -> String
+applyCasing casing (GeneratedName { adjectives, noun }) =
+    (noun :: adjectives)
         |> List.reverse
-        |> applyDelimiterType casing
+        |> applyCasingType casing
         |> String.concat
 
 
-applyDelimiterType : DelimiterType -> List String -> List String
-applyDelimiterType delimiterType wordList =
+applyCasingType : CasingType -> List String -> List String
+applyCasingType delimiterType wordList =
     case delimiterType of
         PascalCase ->
             List.map String.Extra.toSentenceCase wordList
@@ -85,8 +81,8 @@ applyDelimiterType delimiterType wordList =
             List.intersperse delimiter wordList
 
 
-adjectives : List String
-adjectives =
+adjectiveList : List String
+adjectiveList =
     [ "abandoned"
     , "abashed"
     , "aberrant"

@@ -37,7 +37,7 @@ import GeneratesProjectNames
 
 type alias Model =
     { nameLength : Int
-    , desiredDelimiterType : GeneratesProjectNames.DelimiterType
+    , desiredCasingType : GeneratesProjectNames.CasingType
     , generatedNameData : Maybe GeneratesProjectNames.GeneratedName
     }
 
@@ -54,7 +54,7 @@ defaultWordLength =
 init : {} -> ( Model, Cmd Message )
 init _ =
     ( { nameLength = defaultWordLength
-      , desiredDelimiterType = GeneratesProjectNames.defaultDelimiterType
+      , desiredCasingType = GeneratesProjectNames.defaultCasingType
       , generatedNameData = Nothing
       }
     , GeneratesProjectNames.randomNameData defaultWordLength NameDataGenerated
@@ -86,7 +86,7 @@ generatedNameView model =
     let
         name =
             model.generatedNameData
-                |> Maybe.map (GeneratesProjectNames.applyCasing model.desiredDelimiterType)
+                |> Maybe.map (GeneratesProjectNames.applyCasing model.desiredCasingType)
                 |> Maybe.withDefault "Not Generated Yet"
     in
     el [ centerX, centerY, Font.size 48 ] (text name)
@@ -175,8 +175,8 @@ delimiterChoiceView : Model -> Element Message
 delimiterChoiceView model =
     Input.radio
         [ padding 5, spacing 10 ]
-        { onChange = DelimiterTypeChosen
-        , selected = Just model.desiredDelimiterType
+        { onChange = CasingTypeChosen
+        , selected = Just model.desiredCasingType
         , label = Input.labelAbove [] (text "Delimiter")
         , options =
             [ Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
@@ -194,7 +194,7 @@ type Message
     = UserClickedGenerateNameButton
     | NameDataGenerated GeneratesProjectNames.GeneratedName
     | UserChangedLength Int
-    | DelimiterTypeChosen GeneratesProjectNames.DelimiterType
+    | CasingTypeChosen GeneratesProjectNames.CasingType
 
 
 
@@ -225,9 +225,9 @@ update message model =
             , Cmd.none
             )
 
-        DelimiterTypeChosen newDelimiterType ->
+        CasingTypeChosen newCasingType ->
             ( { model
-                | desiredDelimiterType = newDelimiterType
+                | desiredCasingType = newCasingType
               }
             , Cmd.none
             )
