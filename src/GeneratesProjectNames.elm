@@ -25,17 +25,12 @@ type GeneratedName
 type CasingType
     = PascalCase
     | CamelCase
-    | StringDelimiter String
+    | KebabCase
 
 
 defaultCasingType : CasingType
 defaultCasingType =
-    StringDelimiter defaultStringDelimiter
-
-
-defaultStringDelimiter : String
-defaultStringDelimiter =
-    "-"
+    KebabCase
 
 
 randomNameData : Int -> (GeneratedName -> msg) -> Cmd msg
@@ -77,8 +72,8 @@ applyCasingType delimiterType wordList =
                 h :: t ->
                     h :: List.map String.Extra.toSentenceCase t
 
-        StringDelimiter delimiter ->
-            List.intersperse delimiter wordList
+        KebabCase ->
+            List.intersperse "-" wordList
 
 
 adjectiveList : List String

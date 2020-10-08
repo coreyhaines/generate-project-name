@@ -177,11 +177,11 @@ delimiterChoiceView model =
         [ padding 5, spacing 10 ]
         { onChange = CasingTypeChosen
         , selected = Just model.desiredCasingType
-        , label = Input.labelAbove [] (text "Delimiter")
+        , label = Input.labelAbove [] (text "Casing Type")
         , options =
-            [ Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
+            [ Input.option GeneratesProjectNames.KebabCase (text "kebab-case")
             , Input.option GeneratesProjectNames.CamelCase (text "camelCase")
-            , Input.option (GeneratesProjectNames.StringDelimiter "-") (text "kebab-case")
+            , Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
             ]
         }
 
