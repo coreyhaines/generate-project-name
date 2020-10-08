@@ -1,4 +1,12 @@
-module GeneratesProjectNames exposing (DelimiterType(..), defaultDelimiterType, randomName, randomNameWithDelimiter)
+module GeneratesProjectNames exposing
+    ( DelimiterType(..)
+    , GeneratedName
+    , applyCasing
+    , defaultDelimiterType
+    , randomName
+    , randomNameData
+    , randomNameWithDelimiter
+    )
 
 {-| Generates Random Project Names
 
@@ -10,6 +18,10 @@ Nouns and Adjectives list taken from
 import Random
 import Random.List
 import String.Extra
+
+
+type GeneratedName
+    = GeneratedName { adjectiveList : List String, noun : String }
 
 
 type DelimiterType
@@ -50,6 +62,27 @@ randomNameWithDelimiter delimiterType length msg =
         |> Random.generate msg
 
 
+randomNameData : Int -> (GeneratedName -> msg) -> Cmd msg
+randomNameData length msg =
+    Random.map2
+        createNameData
+        (Random.list (length - 1) (Random.List.choose adjectives))
+        (Random.List.choose nouns)
+        |> Random.generate msg
+
+
+createNameData : List ( Maybe String, List String ) -> ( Maybe String, List String ) -> GeneratedName
+createNameData generatedAdjectives generatedNoun =
+    let
+        adjectivesForName =
+            List.filterMap Tuple.first generatedAdjectives
+
+        noun =
+            Tuple.first generatedNoun |> Maybe.withDefault "NoNounFound"
+    in
+    GeneratedName { adjectiveList = adjectivesForName, noun = noun }
+
+
 combineAdjectivesAndNounIntoName : DelimiterType -> List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
 combineAdjectivesAndNounIntoName delimiterType generatedAdjectives generatedNoun =
     let
@@ -60,6 +93,14 @@ combineAdjectivesAndNounIntoName delimiterType generatedAdjectives generatedNoun
     in
     wordList
         |> applyDelimiterType delimiterType
+        |> String.concat
+
+
+applyCasing : DelimiterType -> GeneratedName -> String
+applyCasing casing (GeneratedName { adjectiveList, noun }) =
+    (noun :: adjectiveList)
+        |> List.reverse
+        |> applyDelimiterType casing
         |> String.concat
 
 

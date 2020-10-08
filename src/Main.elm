@@ -39,6 +39,7 @@ type alias Model =
     { generatedName : Maybe String
     , nameLength : Int
     , desiredDelimiterType : GeneratesProjectNames.DelimiterType
+    , generatedNameData : Maybe GeneratesProjectNames.GeneratedName
     }
 
 
@@ -56,8 +57,12 @@ init _ =
     ( { generatedName = Nothing
       , nameLength = defaultWordLength
       , desiredDelimiterType = GeneratesProjectNames.defaultDelimiterType
+      , generatedNameData = Nothing
       }
-    , GeneratesProjectNames.randomNameWithDelimiter GeneratesProjectNames.defaultDelimiterType defaultWordLength NameGenerated
+    , Cmd.batch
+        [ GeneratesProjectNames.randomNameWithDelimiter GeneratesProjectNames.defaultDelimiterType defaultWordLength NameGenerated
+        , GeneratesProjectNames.randomNameData defaultWordLength NameDataGenerated
+        ]
     )
 
 
@@ -83,7 +88,13 @@ view model =
 
 generatedNameView : Model -> Element Message
 generatedNameView model =
-    el [ centerX, centerY, Font.size 48 ] (text <| Maybe.withDefault "Choose a name length and click Generate" model.generatedName)
+    let
+        name =
+            model.generatedNameData
+                |> Maybe.map (GeneratesProjectNames.applyCasing model.desiredDelimiterType)
+                |> Maybe.withDefault "Not Generated Yet"
+    in
+    el [ centerX, centerY, Font.size 48 ] (text name)
 
 
 titleView : Element Message
@@ -187,6 +198,7 @@ delimiterChoiceView model =
 type Message
     = UserClickedGenerateNameButton
     | NameGenerated String
+    | NameDataGenerated GeneratesProjectNames.GeneratedName
     | UserChangedLength Int
     | DelimiterTypeChosen GeneratesProjectNames.DelimiterType
 
@@ -201,8 +213,19 @@ update message model =
         UserClickedGenerateNameButton ->
             ( { model
                 | generatedName = Nothing
+                , generatedNameData = Nothing
               }
-            , GeneratesProjectNames.randomNameWithDelimiter model.desiredDelimiterType model.nameLength NameGenerated
+            , Cmd.batch
+                [ GeneratesProjectNames.randomNameWithDelimiter model.desiredDelimiterType model.nameLength NameGenerated
+                , GeneratesProjectNames.randomNameData model.nameLength NameDataGenerated
+                ]
+            )
+
+        NameDataGenerated nameData ->
+            ( { model
+                | generatedNameData = Just nameData
+              }
+            , Cmd.none
             )
 
         NameGenerated name ->
