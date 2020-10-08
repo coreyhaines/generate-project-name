@@ -3,9 +3,7 @@ module GeneratesProjectNames exposing
     , GeneratedName
     , applyCasing
     , defaultDelimiterType
-    , randomName
     , randomNameData
-    , randomNameWithDelimiter
     )
 
 {-| Generates Random Project Names
@@ -40,28 +38,6 @@ defaultStringDelimiter =
     "-"
 
 
-{-| Produces a name of the form, adjective-adject-noun, by randomly choosing `length - 1` adjectives from a list and concatenating it with a random noun.
-
-This function returns a `Cmd msg`. You must provide this in the form `(String -> msg)`, where the `String` is the generated name.
-
-randomName 2 GeneratedName == "boring-authority"
-randomName 3 GeneratedName == "funny-dirty-cone"
-
--}
-randomName : Int -> (String -> msg) -> Cmd msg
-randomName =
-    randomNameWithDelimiter defaultDelimiterType
-
-
-randomNameWithDelimiter : DelimiterType -> Int -> (String -> msg) -> Cmd msg
-randomNameWithDelimiter delimiterType length msg =
-    Random.map2
-        (combineAdjectivesAndNounIntoName delimiterType)
-        (Random.list (length - 1) (Random.List.choose adjectives))
-        (Random.List.choose nouns)
-        |> Random.generate msg
-
-
 randomNameData : Int -> (GeneratedName -> msg) -> Cmd msg
 randomNameData length msg =
     Random.map2
@@ -81,19 +57,6 @@ createNameData generatedAdjectives generatedNoun =
             Tuple.first generatedNoun |> Maybe.withDefault "NoNounFound"
     in
     GeneratedName { adjectiveList = adjectivesForName, noun = noun }
-
-
-combineAdjectivesAndNounIntoName : DelimiterType -> List ( Maybe String, List String ) -> ( Maybe String, List String ) -> String
-combineAdjectivesAndNounIntoName delimiterType generatedAdjectives generatedNoun =
-    let
-        wordList =
-            (generatedNoun :: generatedAdjectives)
-                |> List.filterMap Tuple.first
-                |> List.reverse
-    in
-    wordList
-        |> applyDelimiterType delimiterType
-        |> String.concat
 
 
 applyCasing : DelimiterType -> GeneratedName -> String

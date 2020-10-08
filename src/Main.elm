@@ -36,8 +36,7 @@ import GeneratesProjectNames
 
 
 type alias Model =
-    { generatedName : Maybe String
-    , nameLength : Int
+    { nameLength : Int
     , desiredDelimiterType : GeneratesProjectNames.DelimiterType
     , generatedNameData : Maybe GeneratesProjectNames.GeneratedName
     }
@@ -54,15 +53,11 @@ defaultWordLength =
 
 init : {} -> ( Model, Cmd Message )
 init _ =
-    ( { generatedName = Nothing
-      , nameLength = defaultWordLength
+    ( { nameLength = defaultWordLength
       , desiredDelimiterType = GeneratesProjectNames.defaultDelimiterType
       , generatedNameData = Nothing
       }
-    , Cmd.batch
-        [ GeneratesProjectNames.randomNameWithDelimiter GeneratesProjectNames.defaultDelimiterType defaultWordLength NameGenerated
-        , GeneratesProjectNames.randomNameData defaultWordLength NameDataGenerated
-        ]
+    , GeneratesProjectNames.randomNameData defaultWordLength NameDataGenerated
     )
 
 
@@ -197,7 +192,6 @@ delimiterChoiceView model =
 
 type Message
     = UserClickedGenerateNameButton
-    | NameGenerated String
     | NameDataGenerated GeneratesProjectNames.GeneratedName
     | UserChangedLength Int
     | DelimiterTypeChosen GeneratesProjectNames.DelimiterType
@@ -212,25 +206,14 @@ update message model =
     case message of
         UserClickedGenerateNameButton ->
             ( { model
-                | generatedName = Nothing
-                , generatedNameData = Nothing
+                | generatedNameData = Nothing
               }
-            , Cmd.batch
-                [ GeneratesProjectNames.randomNameWithDelimiter model.desiredDelimiterType model.nameLength NameGenerated
-                , GeneratesProjectNames.randomNameData model.nameLength NameDataGenerated
-                ]
+            , GeneratesProjectNames.randomNameData model.nameLength NameDataGenerated
             )
 
         NameDataGenerated nameData ->
             ( { model
                 | generatedNameData = Just nameData
-              }
-            , Cmd.none
-            )
-
-        NameGenerated name ->
-            ( { model
-                | generatedName = Just name
               }
             , Cmd.none
             )
