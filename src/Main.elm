@@ -180,6 +180,7 @@ delimiterChoiceView model =
         , label = Input.labelAbove [] (text "Casing Type")
         , options =
             [ Input.option GeneratesProjectNames.KebabCase (text "kebab-case")
+            , Input.option GeneratesProjectNames.SnakeCase (text "snake_case")
             , Input.option GeneratesProjectNames.CamelCase (text "camelCase")
             , Input.option GeneratesProjectNames.PascalCase (text "PascalCase")
             ]

@@ -26,6 +26,7 @@ type CasingType
     = PascalCase
     | CamelCase
     | KebabCase
+    | SnakeCase
 
 
 defaultCasingType : CasingType
@@ -74,6 +75,9 @@ applyCasingType delimiterType wordList =
 
         KebabCase ->
             List.intersperse "-" wordList
+
+        SnakeCase ->
+            List.intersperse "_" wordList
 
 
 adjectiveList : List String
